@@ -56,10 +56,10 @@ class Param:
         parser.add_argument("--num_workers", default=0, type=int)
 
         # epoch1
-        parser.add_argument("--step1_epochs", default=10, type=int) 
+        parser.add_argument("--step1_epochs", default=1, type=int) 
 
         # epoch2
-        parser.add_argument("--step2_epochs", default=10, type=int) 
+        parser.add_argument("--step2_epochs", default=1, type=int) 
 
         parser.add_argument("--seed", default=2021, type=int) 
 
@@ -75,5 +75,7 @@ class Param:
 
         # bert-base-uncased weights path
         parser.add_argument("--bert_path", default="bert-base-uncased", type=str)
+
+        parser.add_argument("--protoAug", default=False, type=bool)
         
         return parser
