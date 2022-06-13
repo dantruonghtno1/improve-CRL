@@ -418,7 +418,7 @@ class Manager(object):
                     self.moment.init_moment(args, encoder, train_data_for_memory, is_memory=True)
                     # start edit here
                     # self.train_mem_model(args, encoder, train_data_for_memory, proto4repaly, args.step2_epochs, seen_relations)
-                    if args.protoAug == True:
+                    if args.protoAug == False:
                         self.train_mem_model(args, encoder, train_data_for_memory, protos_raw, args.step2_epochs, seen_relations)
                     else: 
                         protoAug, radius = self.protoAug_PASS(protoDict4replay, feature4task, radius, 100, steps + 1, 8, seen_relations)
