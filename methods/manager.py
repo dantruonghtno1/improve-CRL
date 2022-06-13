@@ -378,6 +378,10 @@ class Manager(object):
             proto4repaly = []
 
             # start edit here 
+            if args.protoAug == True:
+                protoDict4replay = {}
+                # feature4task = {}
+                radius = 0
             protos_raw = []
             # end edit hert
             for steps, (training_data, valid_data, test_data, current_relations, historic_test_data, seen_relations) in enumerate(sampler):
@@ -395,12 +399,16 @@ class Manager(object):
                 self.train_simple_model(args, encoder, train_data_for_initial, args.step1_epochs)
 
                 # repaly
+                feature4task = {}
                 if len(memorized_samples)>0:
                     # select current task sample
                     for relation in current_relations:
-                        memorized_samples[relation], _, proto_raw = self.select_data(args, encoder, training_data[relation])
+                        memorized_samples[relation], current_feat, proto_raw = self.select_data(args, encoder, training_data[relation])
                         # start edit here
                         protos_raw.append(proto_raw)
+                        if args.protoAug == True:
+                            protoDict4replay[relation] = proto_raw
+                            feature4task[relation] = current_feat 
                         # end edit here
                     
                     train_data_for_memory = []
@@ -410,7 +418,12 @@ class Manager(object):
                     self.moment.init_moment(args, encoder, train_data_for_memory, is_memory=True)
                     # start edit here
                     # self.train_mem_model(args, encoder, train_data_for_memory, proto4repaly, args.step2_epochs, seen_relations)
-                    self.train_mem_model(args, encoder, train_data_for_memory, protos_raw, args.step2_epochs, seen_relations)
+                    if args.protoAug == True:
+                        self.train_mem_model(args, encoder, train_data_for_memory, protos_raw, args.step2_epochs, seen_relations)
+                    else: 
+                        protoAug, radius = self.protoAug_PASS(protoDict4replay, feature4task, radius, 100, steps + 1, 8, seen_relations)
+                        self.train_mem_with_protoAug_model(args, encoder, protoAug, proto_mem, args.step2_epochs, seen_relations)
+
                     # end edit here
                 feat_mem = []
                 proto_mem = []
